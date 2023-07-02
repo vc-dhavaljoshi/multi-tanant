@@ -1,8 +1,6 @@
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
-
-
         <!-- Email Address -->
         <div>
             <x-input-label for="company_name" :value="__('Company Name')" />

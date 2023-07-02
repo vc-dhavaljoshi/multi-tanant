@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use App\Http\Controllers\Blog\BlogController;
+use App\Http\Middleware\EnforceTenancy;
+use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,8 +25,8 @@ Route::get('/', function () {
 Route::middleware([
     'web',
     'auth',
-    \App\Http\Middleware\EnforceTenancy::class,
-    \Stancl\Tenancy\Middleware\InitializeTenancyByRequestData::class
+    EnforceTenancy::class,
+    InitializeTenancyByRequestData::class
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
@@ -33,7 +35,12 @@ Route::middleware([
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Blog Routes
+    Route::group(['prefix' => 'blog', 'as' => 'blog.'], function () {
+        Route::resource('', BlogController::class);
+    });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
