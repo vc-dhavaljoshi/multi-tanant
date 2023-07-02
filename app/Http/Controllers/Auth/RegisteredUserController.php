@@ -39,15 +39,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'company_name' => $request->company_name,
-            'domain' => $request->domain_name,
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-       $tenant =  \App\Models\Tenant::create([
+        $tenant =  \App\Models\Tenant::create([
             'tenancy_db_name' => $request->domain_name
         ]);
 
@@ -55,12 +47,22 @@ class RegisteredUserController extends Controller
             'domain' => $request->domain_name,
         ]);
 
+        $user = User::create([
+            'company_name' => $request->company_name,
+            'tenant_id' => $tenant->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+
+
         event(new Registered($user));
 
         Auth::login($user);
 
         session()->put('x-tenant', $tenant->id);
-        $domain = $request->domain_name.'.multitenant.local';
-        return redirect(tenant_route($domain,'dashboard'));
+
+        return redirect()->route('dashboard');
     }
 }

@@ -25,7 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'domain',
+        'tenant_id',
         'company_name'
     ];
 
@@ -48,8 +48,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function domain() {
-        return $this->belongsTo(Domain::class);
-    }
 }

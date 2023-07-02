@@ -3,11 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 use Stancl\Tenancy\Middleware\InitializeTenancyByRequestData;
-use Symfony\Component\HttpFoundation\Response;
+
 
 class EnforceTenancy
 {
@@ -21,6 +18,10 @@ class EnforceTenancy
         if(session('x-tenant')) {
             $request->headers->set('X-Tenant', session('x-tenant'));
         }
+
+        InitializeTenancyByRequestData::$onFail = function ($exception, $request, $next) {
+            return redirect()->route('login');
+        };
 
         return $next($request);
 

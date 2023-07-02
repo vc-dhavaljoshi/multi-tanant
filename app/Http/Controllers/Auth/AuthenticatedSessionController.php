@@ -29,6 +29,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        session()->put('x-tenant', auth()->user()->tenant_id);
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -42,7 +44,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        
+
         return redirect('/');
     }
 }
